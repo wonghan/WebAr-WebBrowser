@@ -63,7 +63,7 @@ window.addEventListener('resize', function(){
 function onResize(){
     arToolkitSource.onResizeElement()
     arToolkitSource.copyElementSizeTo(renderer.domElement)
-rendererCSS3D.setSize( window.innerWidth, window.innerHeight );
+    rendererCSS3D.setSize( window.innerWidth, window.innerHeight );
 // 	if (window.innerWidth > window.innerHeight) {
 //     //landscape
 //     rendererCSS3D.domElement.style.transform = 'scale(0.1)';
@@ -132,7 +132,7 @@ domElement.style.border	= 'none';
 
 var obj = new THREE.CSS3DObject( domElement );
 obj.position.x = 0; 
-obj.position.y = 0;
+obj.position.y = -500;
 obj.position.z = -2000;
 scene.add(obj)
 
