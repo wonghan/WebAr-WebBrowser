@@ -133,7 +133,7 @@ domElement.style.border	= 'none';
 var obj = new THREE.CSS3DObject( domElement );
 obj.position.x = 0; 
 obj.position.y = 0;
-obj.position.z = -1000;
+obj.position.z = -2000;
 scene.add(obj)
 
 //////////////////////////////////////////////////////////////////////////////////
