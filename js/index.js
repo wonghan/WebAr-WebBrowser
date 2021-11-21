@@ -39,6 +39,10 @@ scene.add(camera);
 var arToolkitSource = new THREEx.ArToolkitSource({
     // to read from the webcam
     sourceType : 'webcam',
+    sourceWidth: window.innerWidth,
+    sourceHeight: window.innerHeight,
+    displayWidth: window.innerWidth,
+    displayHeight: window.innerHeight,
 
     // // to read from an image
     // sourceType : 'image',
@@ -120,20 +124,12 @@ scene.visible = false
 //////////////////////////////////////////////////////////////////////////////////
 
 // add html
-var url		= 'https://www.bilibili.com/';
-var domElement	= document.createElement('iframe');
-domElement.src	= url;
-domElement.id = "iframe_1";
-domElement.name = "iframe_1";
-console.log('domElement',domElement)
-domElement.style.height = '640px';
-domElement.style.width = '1280px';
-domElement.style.border	= 'none';
 
-var obj = new THREE.CSS3DObject( domElement );
+var browserEle = createWebBrowser();
+var obj = new THREE.CSS3DObject(browserEle);
 obj.position.x = 0; 
-obj.position.y = -500;
-obj.position.z = -2000;
+obj.position.y = -200;
+obj.position.z = -1000;
 scene.add(obj)
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -160,3 +156,92 @@ requestAnimationFrame(function animate(nowMsec){
         onRenderFct(deltaMsec/1000, nowMsec/1000)
     })
 })
+addJumpUrlEvent();
+
+function createWebBrowser(){
+    var browserDiv = document.createElement('div');
+    browserDiv.style.height = '720px';
+    browserDiv.style.width = '1280px';
+    
+    var addressBarDiv = document.createElement('div');
+    addressBarDiv.style={
+        height: '30px',
+        width: '100%',
+        display: 'flex',
+        flexFlow: 'row nowrap'
+    }
+    browserDiv.appendChild(addressBarDiv);
+
+
+
+    var inputEle = document.createElement('input');
+    inputEle.id = "address-bar-input";
+    inputEle.style={
+        height: '100%',
+        width: '100%',
+        borderRadius: '4px'
+    }
+    addressBarDiv.appendChild(inputEle);
+
+    var ButtonEle = document.createElement('button');
+    ButtonEle.id = "address-bar-button"
+    ButtonEle.type='button';
+    ButtonEle.innerText='Jump';
+    ButtonEle.style={
+        height: '100%',
+        width: '100%',
+        borderRadius: '4px'
+    }
+    addressBarDiv.appendChild(ButtonEle);
+    
+    var iframeEle	= document.createElement('iframe');
+    iframeEle.src	= 'https://www.bilibili.com';
+    iframeEle.id = "iframe_1";
+    iframeEle.name = "iframe_1";
+    iframeEle.height = '100%';
+    iframeEle.width = '100%';
+    iframeEle.sandbox= "allow-downloads-without-user-activation allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts allow-storage-access-by-user-activation";
+    iframeEle.style.border = 'none';
+    browserDiv.appendChild(iframeEle);
+
+    return browserDiv;
+}
+function addJumpUrlEvent(){
+    window.addEventListener('load',function(){
+        getElementByIdAsync('iframe_1',(iframe)=>
+            getElementByIdAsync('address-bar-input', (input)=>
+                getElementByIdAsync('address-bar-button', (button)=>{
+                    button.addEventListener('click', function(e){
+                        var val = input.value;
+                        console.log('val', val)
+                        if(!val){
+                            return false;
+                        }
+                        iframe.src = val;
+                        input.value = '';
+                    })
+                })));
+        console.log('addJumpUrlEvent')
+    })
+}
+function getElementByIdAsync(id, callback, delay=200){
+    if(typeof id!=='string'){
+        console.error("function getElementByIdAsync error: id!=='string'");
+        return false;
+    }
+    if(id===''){
+        console.error("function getElementByIdAsync error: id===''");
+        return false;
+    }
+    if(typeof callback !== 'function'){
+        console.error("function getElementByIdAsync error: typeof callback !== 'function'");
+        return false;
+    }
+    var interval = setInterval(function(e){
+        var ele = document.getElementById(id);
+        if(ele){
+            clearInterval(interval)
+            callback(ele);
+        }
+    },delay)
+}
