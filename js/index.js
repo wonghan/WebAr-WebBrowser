@@ -1,4 +1,4 @@
-THREEx.ArToolkitContext.baseURL = '../'
+THREEx.ArToolkitContext.baseURL = '/WebAr-WebBrowser/'
 // init renderer
 var renderer = new THREE.WebGLRenderer({
     antialias: true,
