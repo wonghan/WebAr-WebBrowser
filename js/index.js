@@ -115,17 +115,25 @@ var markerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
     patternUrl : THREEx.ArToolkitContext.baseURL + 'sources/patt.hiro',
     // patternUrl : THREEx.ArToolkitContext.baseURL + '../data/data/patt.kanji',
     // as we controls the camera, set changeMatrixMode: 'cameraTransformMatrix'
-    changeMatrixMode: 'cameraTransformMatrix'
+    changeMatrixMode: 'cameraTransformMatrix',
+    size: 1,
+    smooth: true,
 })
 // as we do changeMatrixMode: 'cameraTransformMatrix', start with invisible scene
 scene.visible = false
-
+var iframeBrowserDebounceCount = 0;
 onRenderFcts.push(function(){
     if(iframeBrowser){
         if(markerControls.object3d.visible){
+            iframeBrowserDebounceCount = 0;
             iframeBrowser.style.visibility = 'visible';
         }else{
-            iframeBrowser.style.visibility = 'hidden';
+            iframeBrowserDebounceCount++;
+            // debounce
+            if(iframeBrowserDebounceCount===20){
+                iframeBrowserDebounceCount = 0;
+                iframeBrowser.style.visibility = 'hidden';
+            }
         }
         
     }
@@ -135,14 +143,19 @@ onRenderFcts.push(function(){
 //		add an object in the scene
 //////////////////////////////////////////////////////////////////////////////////
 
+// var material = new THREE.MeshBasicMaterial({ wireframe: true});
+// var geometry = new THREE.PlaneGeometry();
+// var planeMesh = new THREE.Mesh( geometry, material);
+// scene.add(planeMesh);
+
 // add html
 
 var browserEle = createWebBrowser();
 var obj = new THREE.CSS3DObject(browserEle);
 obj.position.x = 0;
-obj.position.y = -200;
-obj.position.z = -1000;
-scene.add(obj)
+obj.position.y = -300;
+obj.position.z = -1500;
+scene.add(obj);
 
 //////////////////////////////////////////////////////////////////////////////////
 //		render the whole thing on the page
@@ -179,8 +192,9 @@ window.addEventListener('load',function(){
 function createWebBrowser(){
     var browserDiv = document.createElement('div');
     browserDiv.id = 'iframe-browser';
-    browserDiv.style.height = window.innerHeight +'px';
-    browserDiv.style.width =  window.innerWidth + 'px';
+    browserDiv.style.width =  '1280px';
+    browserDiv.style.height = '720px';
+    
     browserDiv.style.visibility = 'hidden';
     
     var addressBarDiv = document.createElement('div');
