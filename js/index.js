@@ -154,7 +154,7 @@ var browserEle = createWebBrowser();
 var obj = new THREE.CSS3DObject(browserEle);
 obj.position.x = 0;
 obj.position.y = -300;
-obj.position.z = -1500;
+obj.position.z = -1000;
 scene.add(obj);
 
 //////////////////////////////////////////////////////////////////////////////////
