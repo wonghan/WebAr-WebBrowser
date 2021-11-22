@@ -1,4 +1,5 @@
-THREEx.ArToolkitContext.baseURL = '/WebAr-WebBrowser/'
+THREEx.ArToolkitContext.baseURL = '/WebAr-WebBrowser/';
+var iframeBrowser = null;
 // init renderer
 var renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -119,6 +120,17 @@ var markerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
 // as we do changeMatrixMode: 'cameraTransformMatrix', start with invisible scene
 scene.visible = false
 
+onRenderFcts.push(function(){
+    if(iframeBrowser){
+        if(markerControls.object3d.visible){
+            iframeBrowser.style.visibility = 'visible';
+        }else{
+            iframeBrowser.style.visibility = 'hidden';
+        }
+        
+    }
+})
+
 //////////////////////////////////////////////////////////////////////////////////
 //		add an object in the scene
 //////////////////////////////////////////////////////////////////////////////////
@@ -127,7 +139,7 @@ scene.visible = false
 
 var browserEle = createWebBrowser();
 var obj = new THREE.CSS3DObject(browserEle);
-obj.position.x = 0; 
+obj.position.x = 0;
 obj.position.y = -200;
 obj.position.z = -1000;
 scene.add(obj)
@@ -156,12 +168,20 @@ requestAnimationFrame(function animate(nowMsec){
         onRenderFct(deltaMsec/1000, nowMsec/1000)
     })
 })
-addJumpUrlEvent();
+// add window.load events
+window.addEventListener('load',function(){
+    addJumpUrlEvent();
+    getElementByIdAsync('iframe-browser', function(ele){
+        iframeBrowser = ele;
+    })
+})
 
 function createWebBrowser(){
     var browserDiv = document.createElement('div');
-    browserDiv.style.height = '720px';
-    browserDiv.style.width = '1280px';
+    browserDiv.id = 'iframe-browser';
+    browserDiv.style.height = window.innerHeight +'px';
+    browserDiv.style.width =  window.innerWidth + 'px';
+    browserDiv.style.visibility = 'hidden';
     
     var addressBarDiv = document.createElement('div');
     addressBarDiv.style={
@@ -207,22 +227,20 @@ function createWebBrowser(){
     return browserDiv;
 }
 function addJumpUrlEvent(){
-    window.addEventListener('load',function(){
-        getElementByIdAsync('iframe_1',(iframe)=>
-            getElementByIdAsync('address-bar-input', (input)=>
-                getElementByIdAsync('address-bar-button', (button)=>{
-                    button.addEventListener('click', function(e){
-                        var val = input.value;
-                        console.log('val', val)
-                        if(!val){
-                            return false;
-                        }
-                        iframe.src = val;
-                        input.value = '';
-                    })
-                })));
-        console.log('addJumpUrlEvent')
-    })
+    getElementByIdAsync('iframe_1',(iframe)=>
+        getElementByIdAsync('address-bar-input', (input)=>
+            getElementByIdAsync('address-bar-button', (button)=>{
+                button.addEventListener('click', function(e){
+                    var val = input.value;
+                    console.log('val', val)
+                    if(!val){
+                        return false;
+                    }
+                    iframe.src = val;
+                    input.value = '';
+                })
+            })));
+    console.log('addJumpUrlEvent')
 }
 function getElementByIdAsync(id, callback, delay=200){
     if(typeof id!=='string'){
