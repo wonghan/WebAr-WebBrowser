@@ -154,7 +154,7 @@ var browserEle = createWebBrowser();
 var obj = new THREE.CSS3DObject(browserEle);
 obj.position.x = 0;
 obj.position.y = -300;
-obj.position.z = -1000;
+obj.position.z = -1200;
 scene.add(obj);
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -192,8 +192,8 @@ window.addEventListener('load',function(){
 function createWebBrowser(){
     var browserDiv = document.createElement('div');
     browserDiv.id = 'iframe-browser';
-    browserDiv.style.width =  '1280px';
-    browserDiv.style.height = '720px';
+    browserDiv.style.width =  '1440px';
+    browserDiv.style.height = '900px';
     
     browserDiv.style.visibility = 'hidden';
     
